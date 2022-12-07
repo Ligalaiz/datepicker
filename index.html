@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <title>Datepicker</title>
+  </head>
+  <body>
+    <form class="form" id="form">
+      <input class="form__field" type="text" />
+      <div class="form__date-picker date-picker">
+        <div class="date-picker__head">
+          <button class="date-picker__prev"></button>
+          <div class="date-picker__date">
+            <select class="date-picker__month-select select-month">
+              <option class="select-month__item" value="january">
+                January
+              </option>
+              <option class="select-month__item" value="february">
+                February
+              </option>
+              <option class="select-month__item" value="march">March</option>
+            </select>
+            <select class="date-picker__year-select select-year">
+              <option class="select-year__item" value="2022">2022</option>
+              <option class="select-year__item" value="2023">2023</option>
+              <option class="select-year__item" value="2024">2024</option>
+            </select>
+          </div>
+          <button class="date-picker__next"></button>
+        </div>
+        <div class="date-picker__body">
+          <ul class="date-picker__week-line line-week">
+            <li class="line-week__item">Mon</li>
+            <li class="line-week__item">Tue</li>
+            <li class="line-week__item">Wed</li>
+            <li class="line-week__item">Thu</li>
+            <li class="line-week__item">Fri</li>
+            <li class="line-week__item">Sat</li>
+            <li class="line-week__item">Sun</li>
+          </ul>
+          <div class="date-picker__days-block block-days">
+            <ul class="block-days__row">
+              <li class="block-days__item">29</li>
+              <li class="block-days__item">30</li>
+              <li class="block-days__item">31</li>
+              <li class="block-days__item">1</li>
+              <li class="block-days__item">2</li>
+              <li class="block-days__item">3</li>
+              <li class="block-days__item">4</li>
+            </ul>
+            <ul class="block-days__row">
+              <li class="block-days__item">5</li>
+              <li class="block-days__item">6</li>
+              <li class="block-days__item">7</li>
+              <li class="block-days__item">8</li>
+              <li class="block-days__item">9</li>
+              <li class="block-days__item">10</li>
+              <li class="block-days__item">11</li>
+            </ul>
+            <ul class="block-days__row">
+              <li class="block-days__item">12</li>
+              <li class="block-days__item">13</li>
+              <li class="block-days__item">14</li>
+              <li class="block-days__item">15</li>
+              <li class="block-days__item">16</li>
+              <li class="block-days__item">17</li>
+              <li class="block-days__item">18</li>
+            </ul>
+            <ul class="block-days__row">
+              <li class="block-days__item">19</li>
+              <li class="block-days__item">20</li>
+              <li class="block-days__item">21</li>
+              <li class="block-days__item">22</li>
+              <li class="block-days__item">23</li>
+              <li class="block-days__item">24</li>
+              <li class="block-days__item">25</li>
+            </ul>
+            <ul class="block-days__row">
+              <li class="block-days__item">26</li>
+              <li class="block-days__item">27</li>
+              <li class="block-days__item">28</li>
+              <li class="block-days__item">29</li>
+              <li class="block-days__item">30</li>
+              <li class="block-days__item">31</li>
+              <li class="block-days__item">1</li>
+            </ul>
+          </div>
+        </div>
+        <div class="date-picker__controls controls-picker">
+          <button class="controls-picker__btn controls-picker__btn--clear">
+            Clear
+          </button>
+          <button class="controls-picker__btn controls-picker__btn--accept">
+            Accept
+          </button>
+        </div>
+      </div>
+    </form>
+  </body>
+  <script src="./main.js"></script>
+</html>
