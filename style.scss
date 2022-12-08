@@ -20,13 +20,14 @@ select {
   outline: none;
 }
 
-.form {
+.wrap {
   max-width: 40rem;
   margin: 0 auto;
 
-  &__field {
-    display: none;
-  }
+}
+
+.field {
+  display: none;
 }
 
 .date-picker {

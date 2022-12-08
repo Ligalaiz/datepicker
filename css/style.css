@@ -20,11 +20,12 @@ select {
   outline: none;
 }
 
-.form {
+.wrap {
   max-width: 40rem;
   margin: 0 auto;
 }
-.form__field {
+
+.field {
   display: none;
 }
 
