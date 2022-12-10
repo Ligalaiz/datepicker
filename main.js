@@ -1,43 +1,18 @@
-const renderTemplate = () => {
-  const template = `
-  <div class="wrap">
-    <input class="field" type="text" />
-    <div class="date-picker">
-      <div class="date-picker__head">
-        <button class="date-picker__prev"></button>
-        <div class="date-picker__date">
-          <select class="date-picker__month-select select-month" id="selectMonth">
-          </select>
-          <select class="date-picker__year-select select-year" id="selectYear">
-          </select>
-        </div>
-        <button class="date-picker__next"></button>
-      </div>
-      <div class="date-picker__body">
-        <ul class="date-picker__week-line line-week" id="lineWeek""">
-        </ul>
-        <div class="date-picker__days-block block-days" id="blockDays">
-        </div>
-      </div>
-      <div class="date-picker__controls controls-picker">
-        <button class="controls-picker__btn controls-picker__btn--clear">
-          Clear
-        </button>
-        <button class="controls-picker__btn controls-picker__btn--accept">
-          Accept
-        </button>
-      </div>
-    </div>
-  </div>`;
-
-  if (!!this.app) this.app.innerHTML = template;
-}
+import { getYear } from './utils/getYear.utils.js';
+import { getDate } from './utils/getDate.utils.js';
+import { calcYear } from './utils/calcYear.utils.js';
+import { calcMonth } from './utils/calcMonth.utils.js';
+import { calcDay } from './utils/calcDay.utils.js';
+import { getCurrentMonthArr } from './utils/getCurrentMonthArr.utils.js';
+import {
+  getPrevOffsetDays,
+  getPastOffsetDays,
+} from './utils/getOffsetDays.utils.js';
 
 class Datepicker {
   constructor(startYear, endYear) {
     this.startYear = startYear;
     this.endYear = endYear;
-    this.app = document.getElementById('app');
     this.selectInput = document.getElementById('selectYear');
     this.lineWeek = document.getElementById('lineWeek');
     this.selectMonth = document.getElementById('selectMonth');
@@ -57,21 +32,48 @@ class Datepicker {
       'November',
       'December',
     ];
-    this.days = 30;
+    this.monthDays = null;
+    this.currentDate = new Date();
   }
 
+  static renderTemplate(parent = 'app') {
+    const template = `
+    <div class="wrap" id="wrap">
+      <div class="date-picker">
+        <input class="field" type="text" name="date" />
+        <div class="date-picker__head">
+          <button class="date-picker__prev"></button>
+          <div class="date-picker__date">
+            <select class="date-picker__month-select select-month" id="selectMonth">
+            </select>
+            <select class="date-picker__year-select select-year" id="selectYear">
+            </select>
+          </div>
+          <button class="date-picker__next"></button>
+        </div>
+        <div class="date-picker__body">
+          <ul class="date-picker__week-line line-week" id="lineWeek""">
+          </ul>
+          <div class="date-picker__days-block block-days" id="blockDays">
+          </div>
+        </div>
+        <div class="date-picker__controls controls-picker">
+          <button class="controls-picker__btn controls-picker__btn--clear">
+            Clear
+          </button>
+          <button class="controls-picker__btn controls-picker__btn--accept">
+            Accept
+          </button>
+        </div>
+      </div>
+    </div>`;
 
-
-  getYear(date) {
-    return parseInt(date.slice(0, 4));
+    const parentNode = document.getElementById(parent);
+    if (!!parentNode) parentNode.innerHTML = template;
   }
 
   renderYear() {
-    for (
-      let i = this.getYear(this.startYear);
-      i <= this.getYear(this.endYear);
-      i += 1
-    ) {
+    for (let i = getYear(this.startYear); i <= getYear(this.endYear); i += 1) {
       const optionItem = document.createElement('option');
 
       optionItem.value = i;
@@ -99,7 +101,7 @@ class Datepicker {
   }
 
   renderWeek() {
-    for (let i = 0; i < this.weekDays.length - 1; i += 1) {
+    for (let i = 0; i < this.weekDays.length; i += 1) {
       const weekItem = document.createElement('li');
 
       weekItem.textContent = this.weekDays[i];
@@ -111,18 +113,28 @@ class Datepicker {
     }
   }
   renderDays() {
+    const dayArr = getCurrentMonthArr(this.currentDate);
+
+    this.monthDays = getPrevOffsetDays(dayArr)
+      .concat(dayArr)
+      .concat(getPastOffsetDays(dayArr));
+
     let daysRow = document.createElement('ul');
     daysRow.className = 'block-days__row';
 
-    for (let i = 1; i <= this.days; i += 1) {
+    for (let i = 0; i < this.monthDays.length; i += 1) {
       const daysItem = document.createElement('li');
 
-      daysItem.textContent = i;
+      daysItem.textContent = getDate(this.monthDays[i]).day;
       daysItem.className = 'block-days__item';
+
+      if (getDate(this.currentDate).day === getDate(this.monthDays[i]).day) {
+        daysItem.className = 'block-days__item block-days__item--today';
+      }
 
       daysRow.appendChild(daysItem);
 
-      if ((i > 1 && i % 7 === 0) || this.days === i) {
+      if ((i > 1 && (i + 1) % 7 === 0) || this.monthDays.length - 1 === i) {
         if (!!this.blockDays) {
           this.blockDays.insertAdjacentElement('beforeend', daysRow);
         }
@@ -142,7 +154,7 @@ class Datepicker {
 }
 
 window.addEventListener('load', () => {
-  renderTemplate();
+  Datepicker.renderTemplate();
   const datepicker = new Datepicker('2022-12-08', '2024-12-08');
   datepicker.render();
 });

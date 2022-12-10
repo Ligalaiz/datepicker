@@ -168,13 +168,13 @@ select {
     &--range {
       border-radius: 50%;
 
-      background: linear-gradient(180deg, purple 0%, blue 100%);
+      background: linear-gradient(180deg,#bc9cff,#8ba4f9)
     }
 
     &--today {
       border-radius: 50%;
 
-      background: linear-gradient(180deg, green 0%, blue 100%);
+      background: linear-gradient(180deg,#6fcf97,#66d2ea)
     }
   }
 }
