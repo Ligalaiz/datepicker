@@ -1,5 +1,9 @@
 html {
   box-sizing: border-box;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 
 :root {
@@ -72,6 +76,15 @@ select {
 .date-picker__prev:hover, .date-picker__next:hover {
   background-color: rgba(0, 0, 0, 0.062745098);
 }
+.date-picker__prev:disabled:after, .date-picker__next:disabled:after {
+  background-color: grey;
+}
+.date-picker__prev:disabled:before, .date-picker__next:disabled:before {
+  border-color: grey;
+}
+.date-picker__prev:disabled:hover, .date-picker__next:disabled:hover {
+  background-color: unset;
+}
 .date-picker__prev:before {
   transform: translateY(-50%) rotate(130deg);
   left: 32%;
@@ -88,6 +101,11 @@ select {
 }
 .date-picker__body {
   margin-bottom: 0.5rem;
+}
+.date-picker__date {
+  display: flex;
+  justify-content: space-between;
+  min-width: 13rem;
 }
 
 .select-month,
@@ -133,22 +151,23 @@ select {
   align-items: center;
   width: 4rem;
   height: 4rem;
+  border-radius: 50%;
   font-size: 1.2rem;
   line-height: 1;
   color: rgba(0, 0, 0, 0.3137254902);
-  border-radius: 50%;
   transition: all 0.2s;
+  cursor: pointer;
 }
 .block-days__item:hover {
   background-color: rgba(0, 0, 0, 0.062745098);
 }
-.block-days__item--range {
-  border-radius: 50%;
-  background: linear-gradient(180deg, #bc9cff, #8ba4f9);
-}
 .block-days__item--today {
   border-radius: 50%;
   background: linear-gradient(180deg, #6fcf97, #66d2ea);
+}
+.block-days__item--from, .block-days__item--to {
+  border-radius: 50%;
+  background: linear-gradient(180deg, #bc9cff, #8ba4f9);
 }
 
 .controls-picker {
@@ -166,4 +185,9 @@ select {
   font-weight: 700;
   background-color: transparent;
   cursor: pointer;
+}
+
+[data-date=disabled]:hover {
+  background-color: unset;
+  cursor: default;
 }

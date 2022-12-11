@@ -2,15 +2,17 @@ import { getDate } from './getDate.utils.js';
 import { calcDay } from './calcDay.utils.js';
 
 const getPrevOffsetDays = (dayArr) => {
-  const FIRST_DAY_IN_WEEK = 0;
+  const FIRST_DAY_IN_WEEK = 1;
   const startDay = dayArr[0];
   const { weekDay } = getDate(startDay);
 
   if (weekDay === FIRST_DAY_IN_WEEK) return [];
 
+  const DAYS_PER_WEEK = 7;
+  const count = weekDay === 0 ? DAYS_PER_WEEK : weekDay;
   const result = [];
 
-  for (let i = 1, tempDay = startDay; i < weekDay; i += 1) {
+  for (let i = 1, tempDay = startDay; i < count; i += 1) {
     tempDay = calcDay(tempDay, 'dec');
     result.push(tempDay);
   }
@@ -34,4 +36,4 @@ const getPastOffsetDays = (dayArr) => {
   return result;
 };
 
-export {getPrevOffsetDays, getPastOffsetDays}
+export { getPrevOffsetDays, getPastOffsetDays };

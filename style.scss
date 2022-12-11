@@ -1,5 +1,6 @@
 html {
   box-sizing: border-box;
+  user-select: none;
 }
 
 :root {
@@ -23,7 +24,6 @@ select {
 .wrap {
   max-width: 40rem;
   margin: 0 auto;
-
 }
 
 .field {
@@ -84,28 +84,52 @@ select {
     &:hover {
       background-color: #00000010;
     }
+
+    &:disabled {
+      &:after {
+        background-color: grey;
+      }
+
+      &:before {
+        border-color: grey;
+      }
+
+      &:hover {
+        background-color: unset;
+      }
+    }
   }
 
-  &__prev:before {
-    transform: translateY(-50%) rotate(130deg);
-    left: 32%;
+  &__prev {
+    &:before {
+      transform: translateY(-50%) rotate(130deg);
+      left: 32%;
+    }
+
+    &:after {
+      left: 32%;
+    }
   }
 
-  &__prev:after {
-    left: 32%;
-  }
+  &__next {
+    &:before {
+      transform: translateY(-50%) rotate(-45deg);
+      right: 32%;
+    }
 
-  &__next:before {
-    transform: translateY(-50%) rotate(-45deg);
-    right: 32%;
-  }
-
-  &__next:after {
-    right: 32%;
+    &:after {
+      right: 32%;
+    }
   }
 
   &__body {
     margin-bottom: 0.5rem;
+  }
+
+  &__date {
+    display: flex;
+    justify-content: space-between;
+    min-width: 13rem;
   }
 }
 
@@ -153,28 +177,30 @@ select {
     align-items: center;
     width: 4rem;
     height: 4rem;
+    border-radius: 50%;
 
     font-size: 1.2rem;
     line-height: 1;
     color: #00000050;
-    border-radius: 50%;
 
     transition: all 0.2s;
+    cursor: pointer;
 
     &:hover {
       background-color: #00000010;
     }
 
-    &--range {
-      border-radius: 50%;
-
-      background: linear-gradient(180deg,#bc9cff,#8ba4f9)
-    }
-
     &--today {
       border-radius: 50%;
 
-      background: linear-gradient(180deg,#6fcf97,#66d2ea)
+      background: linear-gradient(180deg, #6fcf97, #66d2ea);
+    }
+
+    &--from,
+    &--to {
+      border-radius: 50%;
+
+      background: linear-gradient(180deg, #bc9cff, #8ba4f9);
     }
   }
 }
@@ -195,5 +221,12 @@ select {
 
     background-color: transparent;
     cursor: pointer;
+  }
+}
+
+[data-date='disabled'] {
+  &:hover {
+    background-color: unset;
+    cursor: default;
   }
 }

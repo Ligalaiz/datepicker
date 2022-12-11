@@ -1,4 +1,4 @@
-import { getYear } from './utils/getYear.utils.js';
+import { getDateFromStr } from './utils/getDateFromStr.utils.js';
 import { getDate } from './utils/getDate.utils.js';
 import { calcYear } from './utils/calcYear.utils.js';
 import { calcMonth } from './utils/calcMonth.utils.js';
@@ -13,10 +13,11 @@ class Datepicker {
   constructor(startYear, endYear) {
     this.startYear = startYear;
     this.endYear = endYear;
-    this.selectInput = document.getElementById('selectYear');
+    this.yearNode = document.getElementById('selectYear');
     this.lineWeek = document.getElementById('lineWeek');
-    this.selectMonth = document.getElementById('selectMonth');
+    this.monthNode = document.getElementById('selectMonth');
     this.blockDays = document.getElementById('blockDays');
+    this.prevBtn = document.getElementById('prevBtn');
     this.weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     this.months = [
       'January',
@@ -32,6 +33,8 @@ class Datepicker {
       'November',
       'December',
     ];
+    this.from = null;
+    this.to = null;
     this.monthDays = null;
     this.currentDate = new Date();
   }
@@ -42,17 +45,17 @@ class Datepicker {
       <div class="date-picker">
         <input class="field" type="text" name="date" />
         <div class="date-picker__head">
-          <button class="date-picker__prev"></button>
+          <button class="date-picker__prev" id="prevBtn"></button>
           <div class="date-picker__date">
-            <select class="date-picker__month-select select-month" id="selectMonth">
-            </select>
-            <select class="date-picker__year-select select-year" id="selectYear">
-            </select>
+            <div class="date-picker__month-select select-month" id="selectMonth">
+            </div>
+            <div class="date-picker__year-select select-year" id="selectYear">
+            </div>
           </div>
-          <button class="date-picker__next"></button>
+          <button class="date-picker__next" id="nextBtn"></button>
         </div>
         <div class="date-picker__body">
-          <ul class="date-picker__week-line line-week" id="lineWeek""">
+          <ul class="date-picker__week-line line-week" id="lineWeek">
           </ul>
           <div class="date-picker__days-block block-days" id="blockDays">
           </div>
@@ -73,34 +76,45 @@ class Datepicker {
   }
 
   renderYear() {
-    for (let i = getYear(this.startYear); i <= getYear(this.endYear); i += 1) {
-      const optionItem = document.createElement('option');
+    const { year: currentYear, month: currentMonth } = getDate(
+      this.currentDate
+    );
+    const { year, month } = getDate(new Date());
 
-      optionItem.value = i;
-      optionItem.textContent = i;
-      optionItem.className = 'select-year__item';
+    if (year === currentYear && month === currentMonth) {
+      this.prevBtn.disabled = true;
+    } else {
+      this.prevBtn.disabled = false;
+    }
 
-      if (!!this.selectInput) {
-        this.selectInput.insertAdjacentElement('beforeend', optionItem);
-      }
+    const yearNode = document.createElement('div');
+
+    yearNode.value = currentYear;
+    yearNode.textContent = currentYear;
+    yearNode.className = 'select-year__item';
+
+    if (!!this.yearNode) {
+      this.yearNode.innerHTML = '';
+      this.yearNode.appendChild(yearNode);
     }
   }
 
   renderMonths() {
-    for (let i = 0; i < this.months.length - 1; i += 1) {
-      const monthsItem = document.createElement('option');
+    const currentMonth = getDate(this.currentDate).month;
+    const monthsElem = document.createElement('div');
 
-      monthsItem.value = this.months[i];
-      monthsItem.textContent = this.months[i];
-      monthsItem.className = 'select-month__item';
+    monthsElem.value = this.months[currentMonth];
+    monthsElem.textContent = this.months[currentMonth];
+    monthsElem.className = 'select-month__item';
 
-      if (!!this.selectMonth) {
-        this.selectMonth.insertAdjacentElement('beforeend', monthsItem);
-      }
+    if (!!this.monthNode) {
+      this.monthNode.innerHTML = '';
+      this.monthNode.append(monthsElem);
     }
   }
 
   renderWeek() {
+    this.lineWeek.innerHTML = '';
     for (let i = 0; i < this.weekDays.length; i += 1) {
       const weekItem = document.createElement('li');
 
@@ -112,7 +126,15 @@ class Datepicker {
       }
     }
   }
+
   renderDays() {
+    this.blockDays.innerHTML = '';
+    const todayDate = new Date();
+    const {
+      year: todayYear,
+      month: todayMonth,
+      day: todayDay,
+    } = getDate(todayDate);
     const dayArr = getCurrentMonthArr(this.currentDate);
 
     this.monthDays = getPrevOffsetDays(dayArr)
@@ -124,12 +146,34 @@ class Datepicker {
 
     for (let i = 0; i < this.monthDays.length; i += 1) {
       const daysItem = document.createElement('li');
+      const {
+        year: currentYear,
+        month: currentMonth,
+        day: currentDay,
+      } = getDate(this.monthDays[i]);
 
       daysItem.textContent = getDate(this.monthDays[i]).day;
       daysItem.className = 'block-days__item';
 
-      if (getDate(this.currentDate).day === getDate(this.monthDays[i]).day) {
+      if (this.monthDays[i] < todayDate) {
+        daysItem.setAttribute('data-date', 'disabled');
+      } else {
+        daysItem.setAttribute(
+          'data-date',
+          `${currentYear}-${currentMonth + 1}-${currentDay}`
+        );
+      }
+
+      if (
+        todayYear === currentYear &&
+        todayMonth === currentMonth &&
+        todayDay === currentDay
+      ) {
         daysItem.className = 'block-days__item block-days__item--today';
+        daysItem.setAttribute(
+          'data-date',
+          `${currentYear}-${currentMonth + 1}-${currentDay}`
+        );
       }
 
       daysRow.appendChild(daysItem);
@@ -151,10 +195,39 @@ class Datepicker {
     this.renderWeek();
     this.renderDays();
   }
+
+  changeMonth(sign = 'inc') {
+    if (sign === 'inc') this.currentDate = calcMonth(this.currentDate);
+    if (sign === 'dec') this.currentDate = calcMonth(this.currentDate, 'dec');
+    this.render();
+  }
+
+  pickDate(target) {
+    const {
+      dataset: { date: pickedDate },
+    } = target;
+    if (pickedDate !== 'disabled') {
+      if (!this.from) {
+        this.from = pickedDate;
+        target.classList.add('block-days__item--from');
+      } else if (
+        Date.parse(pickedDate) > Date.parse(this.from) && !this.to
+        ) {
+        this.to = pickedDate;
+        target.classList.add('block-days__item--to');
+      }
+    }
+  }
 }
 
 window.addEventListener('load', () => {
   Datepicker.renderTemplate();
   const datepicker = new Datepicker('2022-12-08', '2024-12-08');
   datepicker.render();
+
+  document.addEventListener('click', ({ target }) => {
+    if (target.id === 'prevBtn') datepicker.changeMonth('dec');
+    if (target.id === 'nextBtn') datepicker.changeMonth();
+    if (target.dataset.date) datepicker.pickDate(target);
+  });
 });
