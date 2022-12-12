@@ -1,9 +1,12 @@
 html {
-  box-sizing: border-box;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 :root {
@@ -108,8 +111,8 @@ select {
   min-width: 13rem;
 }
 
-.select-month,
-.select-year {
+.date-month,
+.date-year {
   font-size: 1.9rem;
   line-height: 1.21;
   color: #000000;
@@ -139,13 +142,31 @@ select {
 .block-days {
   display: flex;
   flex-wrap: wrap;
-}
-.block-days__row {
-  display: flex;
   justify-content: space-between;
-  width: 100%;
 }
 .block-days__item {
+  width: 4rem;
+  height: 4rem;
+}
+.block-days__item span {
+  border-radius: 50%;
+}
+.block-days__item--today span {
+  background: linear-gradient(180deg, #6fcf97, #66d2ea);
+}
+.block-days__item--from, .block-days__item--to {
+  background: linear-gradient(180deg, rgba(188, 156, 255, 0.2509803922), rgba(139, 164, 249, 0.2509803922));
+}
+.block-days__item--from span, .block-days__item--to span {
+  background: linear-gradient(180deg, #bc9cff, #8ba4f9);
+}
+.block-days__item--from {
+  border-radius: 50% 0 0 50%;
+}
+.block-days__item--to {
+  border-radius: 0 50% 50% 0;
+}
+.block-days__text {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -154,20 +175,12 @@ select {
   border-radius: 50%;
   font-size: 1.2rem;
   line-height: 1;
-  color: rgba(0, 0, 0, 0.3137254902);
+  color: rgba(31, 32, 65, 0.5019607843);
   transition: all 0.2s;
   cursor: pointer;
 }
-.block-days__item:hover {
+.block-days__text:hover {
   background-color: rgba(0, 0, 0, 0.062745098);
-}
-.block-days__item--today {
-  border-radius: 50%;
-  background: linear-gradient(180deg, #6fcf97, #66d2ea);
-}
-.block-days__item--from, .block-days__item--to {
-  border-radius: 50%;
-  background: linear-gradient(180deg, #bc9cff, #8ba4f9);
 }
 
 .controls-picker {
@@ -187,7 +200,19 @@ select {
   cursor: pointer;
 }
 
-[data-date=disabled]:hover {
+[data-date=disabled] .block-days__text {
+  color: rgba(31, 32, 65, 0.2509803922);
+}
+[data-date=disabled] .block-days__text:hover {
   background-color: unset;
   cursor: default;
+}
+
+.focus,
+.range {
+  background: linear-gradient(180deg, rgba(188, 156, 255, 0.2509803922), rgba(139, 164, 249, 0.2509803922));
+}
+
+.focus {
+  border-radius: 0 50% 50% 0;
 }
